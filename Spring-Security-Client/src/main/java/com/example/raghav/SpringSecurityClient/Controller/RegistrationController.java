@@ -1,8 +1,11 @@
 package com.example.raghav.SpringSecurityClient.Controller;
 
 import com.example.raghav.SpringSecurityClient.Entity.User;
+import com.example.raghav.SpringSecurityClient.Entity.VerificationToken;
 import com.example.raghav.SpringSecurityClient.Event.RegistrationCompleteEvent;
+import com.example.raghav.SpringSecurityClient.Event.ResendTokenEvent;
 import com.example.raghav.SpringSecurityClient.Model.UserModel;
+import com.example.raghav.SpringSecurityClient.Service.EmailService;
 import com.example.raghav.SpringSecurityClient.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import java.awt.*;
 public class RegistrationController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ApplicationEventPublisher publisher;
@@ -38,6 +43,19 @@ public class RegistrationController {
             return "User successfully verified";
         }
         return "Registration failed";
+    }
+
+    @GetMapping("/resendVerificationToken")
+    public String resendVerificationToken(@RequestParam("token") String oldToken, HttpServletRequest request){
+        VerificationToken verificationToken = userService.generateNewVerificationToken(oldToken);
+
+        User user = verificationToken.getUser();
+        publisher.publishEvent(new ResendTokenEvent(
+                user,
+                applicationUrl(request),
+                verificationToken.getToken()
+        ));
+        return "Verification link Sent";
     }
 
     private String applicationUrl(HttpServletRequest request){

@@ -1,6 +1,7 @@
 package com.example.raghav.SpringSecurityClient.Service;
 
 import com.example.raghav.SpringSecurityClient.Entity.User;
+import com.example.raghav.SpringSecurityClient.Entity.VerificationToken;
 import com.example.raghav.SpringSecurityClient.Model.UserModel;
 
 public interface UserService {
@@ -9,4 +10,6 @@ public interface UserService {
     void saveVerificationTokenForUser(User user, String token);
 
     String validateRegistrationToken(String token);
+
+    VerificationToken generateNewVerificationToken(String oldToken);
 }

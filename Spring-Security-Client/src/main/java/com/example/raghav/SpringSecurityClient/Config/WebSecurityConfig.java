@@ -16,7 +16,8 @@ public class WebSecurityConfig {
     private static final String[] WHITELIST_URLS = {
             "/hello",
             "/register",
-            "/verifyRegistration"
+            "/verifyRegistration*",
+            "/resendVerificationToken*"
     };
     @Bean
     public PasswordEncoder passwordEncoder(){
